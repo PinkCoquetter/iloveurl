@@ -1,4 +1,4 @@
-(https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png)
+<img width="1000" height="333" alt="shlink-hero" src="https://github.com/user-attachments/assets/8df01e53-909a-4788-bdbf-0b0e335be6f6" />
 
 # 📦 Shlink - URL Shortener
 
@@ -62,3 +62,4 @@ Shlink bisa diintegrasikan dengan Shlink Web Client untuk tampilan visual dan ma
    docker compose up -d --build
 
  
+
