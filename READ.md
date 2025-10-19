@@ -28,8 +28,6 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
 - Git
 - RAM minimal 512 MB
 
----
-
 ### 🖥️ Langkah Instalasi Backend
 
 1. **Clone repositori Shlink**
@@ -73,6 +71,7 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
 
 
  
+
 
 
 
