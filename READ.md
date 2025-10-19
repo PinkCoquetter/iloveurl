@@ -22,13 +22,13 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
 
 ## ⚙️ Instalasi
 
-### 🧰 Kebutuhan Sistem
+ 🧰 Kebutuhan Sistem
 - Linux / WSL / Windows (via Docker Desktop)
 - Docker & Docker Compose
 - Git
 - RAM minimal 512 MB
 
-### 🖥️ Langkah Instalasi Backend
+ 🖥️ Langkah Instalasi Backend
 
 1. **Clone repositori Shlink**
    ```bash
@@ -52,7 +52,7 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
    http://localhost:8000/rest/health
    #bila muncul status pass/ok maka backend sudah jalan
 
-### 🖥️ Langkah Instalasi Frontend
+ 🖥️ Langkah Instalasi Frontend
 
 1.  **Clone repositori**
     ```bash
@@ -71,6 +71,7 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
 
 
  
+
 
 
 
