@@ -3,7 +3,7 @@
 
 # 📦 Shlink - URL Shortener
 
-[🏠 Sekilas Tentang](#-sekilas-tentang) • [⚙️ Instalasi](#instalasi) • [🧩 Konfigurasi](#-konfigurasi) • [🚀 Otomatisasi](#-otomatisasi) • [🧠 Cara Pemakaian](#-cara-pemakaian) • [📚 Referensi](#-referensi) • [🧩 Troubleshooting](#-troubleshooting)
+[🏠 Sekilas Tentang](#-sekilas-tentang) • [⚙️ Instalasi](#-instalasi) • [🧩 Konfigurasi](#-konfigurasi) • [🚀 Otomatisasi](#-otomatisasi) • [🧠 Cara Pemakaian](#-cara-pemakaian) • [📚 Referensi](#-referensi)
 
 ---
 
@@ -76,8 +76,38 @@ Shlink juga bisa diintegrasikan dengan **Shlink Web Client** untuk tampilan visu
     ---
 ---
 
+## 🧩 Konfigurasi
 
- 
+
+
+
+---
+
+## 🚀 Otomatisasi
+
+
+
+---
+
+
+## 🧠 Cara Pemakaian
+
+
+
+
+
+---
+
+## 📚 Referensi
+
+
+
+
+---
+
+
+
+
 
 
 
