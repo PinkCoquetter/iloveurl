@@ -1,4 +1,4 @@
-# Project Hosting Shlink [Kelompok 4 / Paralel 1]
+# Project Hosting Shlink [Kelompok 6 / Paralel 1]
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png" alt="Shlink Logo" width="600">
