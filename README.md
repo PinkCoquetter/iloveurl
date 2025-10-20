@@ -1,104 +1,289 @@
-![Shlink](https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png)
+# Project Hosting Shlink [Kelompok 4 / Paralel 1]
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/shlinkio/shlink/ci.yml?branch=develop&logo=github&style=flat-square)](https://github.com/shlinkio/shlink/actions/workflows/ci.yml?query=workflow%3A%22Continuous+integration%22)
-[![Code Coverage](https://img.shields.io/codecov/c/gh/shlinkio/shlink/develop?style=flat-square)](https://app.codecov.io/gh/shlinkio/shlink)
-[![Latest Stable Version](https://img.shields.io/github/release/shlinkio/shlink.svg?style=flat-square)](https://packagist.org/packages/shlinkio/shlink)
-[![Docker pulls](https://img.shields.io/docker/pulls/shlinkio/shlink.svg?logo=docker&style=flat-square)](https://hub.docker.com/r/shlinkio/shlink/)
-[![License](https://img.shields.io/github/license/shlinkio/shlink.svg?style=flat-square)](https://github.com/shlinkio/shlink/blob/main/LICENSE)
+<p align="center">
+  <img src="https://shlink.io/images/shlink-logo.svg" alt="Shlink Logo" width="600">
+</p>
 
-[![Mastodon](https://img.shields.io/mastodon/follow/109329425426175098?color=%236364ff&domain=https%3A%2F%2Ffosstodon.org&label=follow&logo=mastodon&logoColor=white&style=flat-square)](https://fosstodon.org/@shlinkio)
-[![Bluesky](https://img.shields.io/badge/follow-shlinkio-0285FF.svg?style=flat-square&logo=bluesky&logoColor=white)](https://bsky.app/profile/shlink.io)
-[![Paypal donate](https://img.shields.io/badge/Donate-paypal-blue.svg?style=flat-square&logo=paypal&colorA=aaaaaa)](https://slnk.to/donate)
-
-A PHP-based self-hosted URL shortener that can be used to serve shortened URLs under your own domain.
-
-## Table of Contents
-
-- [Full documentation](#full-documentation)
-- [Docker image](#docker-image)
-- [Self-hosted](#self-hosted)
-    - [Download](#download)
-    - [Configure](#configure)
-- [Using shlink](#using-shlink)
-- [Contributing](#contributing)
-
-## Full documentation
-
-This document contains the very basics to get started with Shlink. If you want to learn everything you can do with it, visit the [full searchable documentation](https://shlink.io/documentation/).
-
-## Docker image
-
-You can learn how to use the official docker image by reading [the docs](https://shlink.io/documentation/install-docker-image/).
-
-The idea is that you can just generate a container using the image and provide the custom config via env vars.
-
-## Self-hosted
-
-First, make sure the host where you are going to run shlink fulfills these requirements:
-
-* PHP 8.3 or 8.4
-* The next PHP extensions: json, curl, pdo, intl, gd and gmp/bcmath.
-    * apcu extension is recommended if you don't plan to use RoadRunner.
-    * xml extension is required if you want to generate QR codes in svg format.
-    * sockets and bcmath extensions are required if you want to integrate with a RabbitMQ instance.
-* MySQL, MariaDB, PostgreSQL, MicrosoftSQL or SQLite.
-    * You will also need the corresponding pdo variation for the database you are planning to use: `pdo_mysql`, `pdo_pgsql`, `pdo_sqlsrv` or `pdo_sqlite`.
-
-### Download
-
-In order to run Shlink, you will need a built version of the project. There are two ways to get it.
-
-* **Using a dist file**
-
-    The easiest way to install shlink is by using one of the pre-bundled distributable packages.
-
-    Go to the [latest version](https://github.com/shlinkio/shlink/releases/latest) and download the `shlink*_dist.zip` file that suits your needs. You will find one for every supported PHP version.
-
-    Finally, decompress the file in the location of your choice.
-
-* **Building from sources**
-
-    If for any reason you want to build the project yourself, follow these steps:
-
-    * Clone the project with git (`git clone https://github.com/shlinkio/shlink.git`), or download it by clicking the **Clone or download** green button.
-    * Download the [Composer](https://getcomposer.org/download/) PHP package manager inside the project folder.
-    * Run `./build.sh 3.0.0`, replacing the version with the version number you are going to build (the version number is used as part of the generated dist file name, and to set the value returned when running `shlink -V` from the command line).
-
-    After that, you will have a dist file inside the `build` directory, that you need to decompress in the location of your choice.
-
-    > **Note**
-    >
-    > This is the process used when releasing new Shlink versions. After tagging the new version with git, the GitHub release is automatically created by a [GitHub workflow](https://github.com/shlinkio/shlink/actions?query=workflow%3A%22Publish+release%22), attaching the generated dist file to it.
-
-### Configure
-
-Despite how you built the project, you now need to configure it, by following these steps:
-
-* If you are going to use MySQL, MariaDB, PostgreSQL or Microsoft SQL Server, create an empty database with the name of your choice.
-* Recursively grant write permissions to the `data` directory. Shlink uses it to cache some information.
-* Set up the application by running the `vendor/bin/shlink-installer install` script. It is a command line tool that will guide you through the installation process. **Take into account that this tool has to be run directly on the server where you plan to host Shlink. Do not run it before uploading/moving it there.**
-* Generate your first API key by running `bin/cli api-key:generate`. You will need the key in order to interact with Shlink's API.
-
-## Using shlink
-
-Once shlink is installed, there are two main ways to interact with it:
-
-* **The command line**: Try running `bin/cli` to see all the available commands.
-
-    All of them can be run with the `--help`/`-h` flag in order to see how to use them and all the available options.
-
-    It is probably a good idea to symlink the CLI entry point (`bin/cli`) to somewhere in your path, so that you can run shlink from any directory.
-
-* **The REST API**: The complete docs on how to use the API can be found [here](https://shlink.io/documentation/api-docs), and a sandbox which also documents every endpoint can be found in the [API Spec](https://api-spec.shlink.io/) portal.
-
-    However, you probably don't want to consume the raw API yourself. That's why a nice [web client](https://github.com/shlinkio/shlink-web-client) is provided that can be directly used from [https://app.shlink.io](https://app.shlink.io), or hosted by yourself.
-
-Both the API and CLI allow you to do mostly the same operations, except for API key management, which can be done from the command line interface only.
-
-## Contributing
-
-If you are trying to find out how to run the project in development mode or how to provide contributions, read the [CONTRIBUTING](CONTRIBUTING.md) doc.
+<h1 align="center">SHLINK - Self-Hosted URL Shortener & Link Manager</h1>
+<p align="center" style="font-size: 18px;"><b><i>Powerful, open-source, and privacy-first link shortener</i></b></p>
 
 ---
 
-> This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com)
+## Deskripsi Aplikasi
+
+**Shlink** adalah aplikasi *self-hosted URL shortener* berbasis PHP dan Node.js yang memungkinkan pembuatan tautan pendek, analitik klik, serta integrasi API dengan domain kustom.
+
+Dalam proyek ini, Shlink dijalankan menggunakan **Docker Compose** dengan konfigurasi sebagai berikut:
+
+| Komponen | Fungsi | URL |
+|-----------|---------|-----|
+| Backend (API Server) | Endpoint utama API | `http://103.226.138.119` |
+| Web Client (Dashboard) | UI manajemen link | `https://dashboard.iloveurl.site` |
+| Short Domain | Domain URL pendek | `https://short.iloveurl.site` |
+
+---
+
+## Anggota Kelompok
+
+| Nama | NIM |
+|------|-----|
+| Tsabitha Naylasafa Aurora | G6401231036 |
+| Givari Mirzacky | G6401231098 |
+| Naufal Rama Koswara | G6401231113 |
+| Benadeo Eldian Manting | G6401231117 |
+| Tristian Yosa | G6401231122 |
+
+---
+
+## Instalasi
+
+### 1. Prasyarat
+- Server / VPS (Ubuntu 22.04 atau lebih baru)
+- Domain aktif (`dashboard.iloveurl.site` dan `short.iloveurl.site`)
+- Sudah terinstal **Docker** dan **Docker Compose**
+
+```bash
+sudo apt update && sudo apt install docker.io docker-compose -y
+```
+
+---
+
+### 2. Clone Repository
+
+```bash
+git clone https://github.com/kelompok4-iloveurl/shlink.git
+cd shlink
+```
+
+---
+
+### 3. Struktur Direktori
+
+```
+/shlink
+ ├── docker-compose.yml
+ ├── nginx/
+ │    ├── shlink.site
+ │    └── shlink.dashboard
+ ├── data/
+ └── README.md
+```
+
+---
+
+### 4. Konfigurasi `docker-compose.yml`
+
+Isi `docker-compose.yml` seperti ini:
+
+```yaml
+version: "3.8"
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: shlink_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: shlink
+      MYSQL_USER: shlink
+      MYSQL_PASSWORD: shlink123
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - ./data/db:/var/lib/mysql
+
+  shlink:
+    image: shlinkio/shlink:stable
+    container_name: shlink_server
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DEFAULT_DOMAIN: short.iloveurl.site
+      IS_HTTPS_ENABLED: "true"
+      DB_DRIVER: mysql
+      DB_HOST: db
+      DB_NAME: shlink
+      DB_USER: shlink
+      DB_PASSWORD: shlink123
+      GEOLITE_LICENSE_KEY: ""
+      SHLINK_ADMIN_API_KEY: "0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY="
+    ports:
+      - "8080:8080"
+
+  web_client:
+    image: shlinkio/shlink-web-client:stable
+    container_name: shlink_dashboard
+    restart: always
+    environment:
+      SHLINK_API_URL: "http://103.226.138.119"
+    ports:
+      - "3000:80"
+
+  nginx:
+    image: nginx:alpine
+    container_name: shlink_nginx
+    restart: always
+    volumes:
+      - ./nginx/shlink.site:/etc/nginx/conf.d/shlink.site
+      - ./nginx/shlink.dashboard:/etc/nginx/conf.d/shlink.dashboard
+    ports:
+      - "80:80"
+      - "443:443"
+```
+
+---
+
+### 5. Konfigurasi NGINX
+
+#### File: `nginx/shlink.site`
+
+```nginx
+server {
+    listen 80;
+    server_name short.iloveurl.site;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name short.iloveurl.site;
+
+    ssl_certificate /etc/letsencrypt/live/short.iloveurl.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/short.iloveurl.site/privkey.pem;
+
+    location / {
+        proxy_pass http://shlink:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+#### File: `nginx/shlink.dashboard`
+
+```nginx
+server {
+    listen 80;
+    server_name dashboard.iloveurl.site;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name dashboard.iloveurl.site;
+
+    ssl_certificate /etc/letsencrypt/live/dashboard.iloveurl.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dashboard.iloveurl.site/privkey.pem;
+
+    location / {
+        proxy_pass http://web_client:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+---
+
+### 6. Jalankan Docker Compose
+
+```bash
+sudo docker-compose up -d
+```
+
+---
+
+### 7. Akses Layanan
+
+| Komponen             | URL                                                                | Deskripsi                                 |
+| -------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
+| **Dashboard Shlink** | [https://dashboard.iloveurl.site](https://dashboard.iloveurl.site) | Antarmuka untuk membuat dan memantau link |
+| **Backend API**      | [http://103.226.138.119/rest/v3](http://103.226.138.119/rest/v3)   | Endpoint API REST                         |
+| **Short Domain**     | [https://short.iloveurl.site](https://short.iloveurl.site)         | Domain untuk tautan pendek                |
+
+---
+
+## Cara Pemakaian
+
+### 1. Login ke Dashboard
+
+Masuk ke:
+
+```
+https://dashboard.iloveurl.site
+```
+
+Masukkan **API Key:**
+
+```
+0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY=
+```
+
+---
+
+### 2. Membuat Link Pendek
+
+Isi formulir dengan:
+
+* **Long URL**: tautan asli
+* **Custom Slug (opsional)**: nama pendek unik
+* **Tag / Expiry (opsional)**: keterangan tambahan
+
+Hasil contoh:
+
+```
+https://short.iloveurl.site/kelas-paralel1
+```
+
+---
+
+### 3. Melihat Statistik Klik
+
+Fitur analitik tersedia langsung di dashboard:
+
+* Total klik
+* Lokasi negara pengunjung
+* Browser / sistem operasi
+* Waktu dan sumber referer
+
+---
+
+## Integrasi API
+
+Contoh membuat short URL melalui terminal:
+
+```bash
+curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
+  -H "X-Api-Key: 0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY=" \
+  -d "longUrl=https://example.com&customSlug=promo"
+```
+
+---
+
+## Perbandingan Shlink vs Linktree
+
+| Aspek             | Shlink               | Linktree        |
+| ----------------- | -------------------- | --------------- |
+| Hosting           | Self-hosted          | Cloud           |
+| Privasi Data      | Penuh di tangan user | Di pihak ketiga |
+| Analitik          | Lengkap & real-time  | Terbatas        |
+| Domain Kustom     | Bisa                 | Berbayar        |
+| Multi-link Profil | Tidak ada            | Ada             |
+| API Integration   | Lengkap              | Tidak tersedia  |
+
+---
+
+## Kesimpulan
+
+* **Kelebihan:** gratis, open-source, analitik lengkap, bisa diintegrasikan ke sistem lain.
+* **Kekurangan:** setup lebih teknis, tidak ada multi-link profil seperti Linktree.
+* **Cocok untuk:** tim internal, organisasi, atau proyek yang butuh sistem shortlink privat dan aman.
+
+---
+
+## Referensi
+
+1. [Shlink Official Docs](https://shlink.io/documentation)
+2. [Docker Hub: shlinkio/shlink](https://hub.docker.com/r/shlinkio/shlink)
+3. [Linktree Website](https://linktr.ee/)
+4. [Certbot for SSL](https://certbot.eff.org/)
