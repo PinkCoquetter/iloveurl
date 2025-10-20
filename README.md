@@ -10,9 +10,9 @@
 ---
 
 ## Deskripsi Aplikasi
-<p align="justify">
-Shlink adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
-</p>
+
+**Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
+
 ---
 
 ## Anggota Kelompok
@@ -73,62 +73,36 @@ environment:
   MYSQL_ROOT_PASSWORD: your_root_password
 ```
 
-#### API Key Configuration
-Generate dan set API key untuk Shlink:
-```yaml
-environment:
-  SHLINK_ADMIN_API_KEY: "your_generated_api_key"
+---
+
+### 4. Generate API Key
+
+Masuk ke container Shlink dan generate API key:
+
+```bash
+docker exec -it shlink_php sh
+php /home/shlink/www/bin/cli api-key:generate
+exit
 ```
 
-Contoh konfigurasi lengkap `docker-compose.yml`:
-```yaml
-version: "3.8"
+Salin API key yang dihasilkan dan masukkan ke file `docker-compose.yml` pada bagian `SHLINK_ADMIN_API_KEY`.
 
-services:
-  db:
-    image: mariadb:10.11
-    container_name: shlink_db
-    restart: always
-    environment:
-      MYSQL_DATABASE: shlink
-      MYSQL_USER: shlink
-      MYSQL_PASSWORD: shlink123
-      MYSQL_ROOT_PASSWORD: rootpass
-    volumes:
-      - ./data/db:/var/lib/mysql
+---
 
-  shlink:
-    image: shlinkio/shlink:stable
-    container_name: shlink_server
-    restart: always
-    depends_on:
-      - db
-    environment:
-      DEFAULT_DOMAIN: short.iloveurl.site
-      IS_HTTPS_ENABLED: "false"
-      DB_DRIVER: mysql
-      DB_HOST: db
-      DB_NAME: shlink
-      DB_USER: shlink
-      DB_PASSWORD: shlink123
-      GEOLITE_LICENSE_KEY: ""
-      SHLINK_ADMIN_API_KEY: "0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY="
-    ports:
-      - "8800:8080"
+### 5. Setup Database
 
-  web_client:
-    image: shlinkio/shlink-web-client:stable
-    container_name: shlink_dashboard
-    restart: always
-    environment:
-      SHLINK_API_URL: "http://103.226.138.119:8800"
-    ports:
-      - "3000:80"
+Masuk ke container Shlink dan jalankan migrasi database:
+
+```bash
+docker exec -it shlink_php sh
+php /home/shlink/www/bin/cli db:create
+php /home/shlink/www/bin/cli db:migrate
+exit
 ```
 
 ---
 
-### 4. Konfigurasi NGINX
+### 6. Konfigurasi NGINX
 
 #### File: `/etc/nginx/sites-available/shlink.site`
 
@@ -180,7 +154,7 @@ sudo systemctl restart nginx
 
 ---
 
-### 5. Konfigurasi Vite
+### 7. Konfigurasi Vite
 
 Tambahkan konfigurasi berikut di file `vite.config.ts` untuk mengizinkan akses dari domain dashboard:
 
@@ -197,7 +171,7 @@ server: {
 
 ---
 
-### 6. Jalankan Docker Compose
+### 8. Jalankan Docker Compose
 
 ```bash
 sudo docker-compose up -d
@@ -205,7 +179,7 @@ sudo docker-compose up -d
 
 ---
 
-### 7. Akses Layanan
+### 9. Akses Layanan
 
 | Komponen             | URL                                                                | Deskripsi                                 |
 | -------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
@@ -274,22 +248,59 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 
 ## Perbandingan Shlink vs Linktree
 
-| Aspek             | Shlink               | Linktree        |
+| Aspek | Shlink | Linktree |
 | ----------------- | -------------------- | --------------- |
-| Hosting           | Self-hosted          | Cloud           |
-| Privasi Data      | Penuh di tangan user | Di pihak ketiga |
-| Analitik          | Lengkap & real-time  | Terbatas        |
-| Domain Kustom     | Bisa                 | Berbayar        |
-| Multi-link Profil | Tidak ada            | Ada             |
-| API Integration   | Lengkap              | Tidak tersedia  |
+| **Hosting** | Self-hosted (dikelola sendiri di server pribadi atau VPS) | Cloud-based (dikelola oleh penyedia layanan) |
+| **Privasi Data** | Kontrol penuh di tangan pengguna, data tersimpan di server sendiri | Data dikelola oleh pihak ketiga, bergantung pada kebijakan privasi mereka |
+| **Analitik** | Lengkap dan real-time dengan detail klik, lokasi geografis, browser, sistem operasi, dan referer | Terbatas pada paket gratis, fitur analitik lengkap hanya tersedia di paket berbayar |
+| **Domain Kustom** | Dapat menggunakan domain sendiri tanpa biaya tambahan | Tersedia hanya untuk pengguna paket berbayar |
+| **Multi-link Profil** | Tidak tersedia (fokus pada URL shortening) | Tersedia, cocok untuk bio link di media sosial |
+| **API Integration** | API REST lengkap untuk integrasi dengan sistem lain | Tidak tersedia atau sangat terbatas |
+| **Biaya** | Gratis (open-source), hanya biaya server/hosting | Gratis dengan fitur terbatas, fitur premium berbayar |
+| **Kemudahan Setup** | Membutuhkan pengetahuan teknis (Docker, server management) | Sangat mudah, tanpa setup teknis |
+| **Kustomisasi** | Penuh, dapat dimodifikasi sesuai kebutuhan | Terbatas pada template yang tersedia |
+| **QR Code** | Otomatis generate untuk setiap short URL | Tersedia di paket berbayar |
 
 ---
 
 ## Kesimpulan
 
-* **Kelebihan:** gratis, open-source, analitik lengkap, bisa diintegrasikan ke sistem lain.
-* **Kekurangan:** setup lebih teknis, tidak ada multi-link profil seperti Linktree.
-* **Cocok untuk:** tim internal, organisasi, atau proyek yang butuh sistem shortlink privat dan aman.
+### ✅ Kelebihan Shlink
+- **Gratis dan Open Source**: Tidak ada biaya lisensi, dapat dimodifikasi sesuai kebutuhan
+- **Kontrol Penuh**: Data dan infrastruktur sepenuhnya di bawah kendali pengguna
+- **Privasi Terjamin**: Tidak ada pihak ketiga yang mengakses data klik dan analitik
+- **Analitik Lengkap**: Tracking detail real-time tanpa batasan
+- **Domain Kustom**: Menggunakan domain sendiri tanpa biaya tambahan
+- **API Lengkap**: Integrasi mudah dengan aplikasi dan sistem lain
+- **QR Code Generator**: Generate QR code otomatis untuk setiap URL
+- **Scalable**: Dapat disesuaikan dengan kebutuhan traffic dan storage
+
+### ❌ Kekurangan Shlink
+- **Setup Teknis**: Membutuhkan pengetahuan tentang server, Docker, dan networking
+- **Maintenance**: Perlu maintenance rutin (update, backup, monitoring)
+- **Biaya Hosting**: Memerlukan server atau VPS untuk menjalankan aplikasi
+- **Tidak Ada Multi-link Profil**: Tidak cocok untuk kebutuhan bio link seperti Instagram
+- **Learning Curve**: Butuh waktu untuk mempelajari cara penggunaan dan konfigurasi
+
+### 🎯 Gunakan Shlink Jika:
+- Membutuhkan kontrol penuh atas data dan privasi
+- Mengintegrasikan URL shortener dengan sistem internal perusahaan
+- Memerlukan analitik detail dan real-time tanpa batasan
+- Ingin menggunakan domain sendiri tanpa biaya tambahan
+- Memiliki kemampuan teknis untuk setup dan maintenance server
+- Mengelola volume URL dalam jumlah besar
+- Membutuhkan API untuk automasi dan integrasi
+- Tim atau organisasi yang memerlukan solusi self-hosted
+
+### 🎯 Gunakan Linktree Jika:
+- Membutuhkan bio link untuk profil media sosial (Instagram, TikTok, dll)
+- Ingin setup cepat tanpa pengetahuan teknis
+- Tidak ingin repot dengan server maintenance
+- Fokus pada tampilan profil dengan multiple links
+- Analitik dasar sudah cukup untuk kebutuhan
+- Budget terbatas dan tidak keberatan dengan fitur terbatas
+- Pengguna individu atau personal branding
+- Tidak memerlukan integrasi API atau kustomisasi mendalam
 
 ---
 
@@ -298,4 +309,5 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 1. [Shlink Official Docs](https://shlink.io/documentation)
 2. [Docker Hub: shlinkio/shlink](https://hub.docker.com/r/shlinkio/shlink)
 3. [Linktree Website](https://linktr.ee/)
-4. [Certbot for SSL](https://certbot.eff.org/)
+4. [Chatgpt](https://chatgpt.com/)
+5. [Claude AI](https://claude.ai/)
