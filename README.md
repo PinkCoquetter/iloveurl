@@ -103,7 +103,7 @@ php /home/shlink/www/bin/cli api-key:generate
 exit
 ```
 
-Salin API key yang dihasilkan dan masukkan ke file `docker-compose.yml` pada bagian `SHLINK_ADMIN_API_KEY`, lalu restart container:
+Salin API key yang dihasilkan dan simpan dengan baik, lalu restart container:
 
 ```bash
 sudo docker-compose restart shlink
