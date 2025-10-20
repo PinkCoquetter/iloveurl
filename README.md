@@ -1,9 +1,8 @@
 # Project Hosting Shlink [Kelompok 4 / Paralel 1]
 
 <p align="center">
-  <img src="https://shlink.io/images/shlink-logo.svg" alt="Shlink Logo" width="600">
+  <img src="https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png" alt="Shlink Logo" width="600">
 </p>
-
 <h1 align="center">SHLINK - Self-Hosted URL Shortener & Link Manager</h1>
 <p align="center" style="font-size: 18px;"><b><i>Powerful, open-source, and privacy-first link shortener</i></b></p>
 
@@ -11,7 +10,7 @@
 
 ## Deskripsi Aplikasi
 
-**Shlink** adalah aplikasi *self-hosted URL shortener* berbasis PHP dan Node.js yang memungkinkan pembuatan tautan pendek, analitik klik, serta integrasi API dengan domain kustom.
+**Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
 
 Dalam proyek ini, Shlink dijalankan menggunakan **Docker Compose** dengan konfigurasi sebagai berikut:
 
