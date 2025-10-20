@@ -263,10 +263,10 @@ Masuk ke:
 https://dashboard.iloveurl.site
 ```
 
-Masukkan **API Key:**
+Masukkan **API Key:** (contoh saja)
 
 ```
-0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY=
+11dca439-54f1-4df3-a078-88480a1adfa5
 ```
 
 ---
