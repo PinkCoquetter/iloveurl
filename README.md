@@ -1,4 +1,4 @@
-# Project Hosting Shlink [Kelompok 6 / Paralel 1]
+# Project Hosting Shlink [Kelompok 4 / Paralel 1]
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png" alt="Shlink Logo" width="600">
@@ -20,6 +20,7 @@
 <p align="justify">
 Shlink adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
 </p>
+
 ---
 
 ## Anggota Kelompok
@@ -135,55 +136,24 @@ cd shlink-web-client
 
 ---
 
-### 10. Akses Layanan
+### 8. Konfigurasi Vite
 
-#### File: `/etc/nginx/sites-available/shlink.site`
+Tambahkan konfigurasi berikut di file `vite.config.ts` untuk mengizinkan akses dari domain dashboard:
 
-```nginx
-server {
-    listen 80;
-    server_name iloveurl.site short.iloveurl.site;
-    location / {
-        proxy_pass http://127.0.0.1:8800;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
+```typescript
+server: {
+  port: 3000,
+  allowedHosts: ['dashboard.iloveurl.site', 'localhost', '127.0.0.1'],
+  watch: {
+    // Do not watch test files or generated files, avoiding the dev server to constantly reload when not needed
+    ignored: ['**/.idea/**', '**/.git/**', '**/build/**', '**/coverage/**', '**/test/**'],
+  },
+},
 ```
 
-Aktifkan konfigurasi:
+---
 
-```bash
-sudo ln -s /etc/nginx/sites-available/shlink.site /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-#### File: `/etc/nginx/sites-available/shlink.dashboard`
-
-```nginx
-server {
-    listen 80;
-    server_name dashboard.iloveurl.site;
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-Aktifkan konfigurasi:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/shlink.dashboard /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
+### 9. Konfigurasi NGINX
 
 #### File: `/etc/nginx/sites-available/shlink.site`
 
@@ -235,12 +205,36 @@ sudo systemctl restart nginx
 
 ---
 
-### 10. Akses Layanan
+### 10. Setup SSL dengan Certbot
+
+Install Certbot:
+
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+```
+
+Jalankan Certbot untuk Shlink:
+
+```bash
+sudo certbot --nginx -d iloveurl.site -d short.iloveurl.site
+```
+
+Jalankan Certbot untuk Dashboard:
+
+```bash
+sudo certbot --nginx -d dashboard.iloveurl.site
+```
+
+Certbot akan secara otomatis mengkonfigurasi SSL dan mengubah file NGINX untuk menggunakan HTTPS.
+
+---
+
+### 11. Akses Layanan
 
 | Komponen             | URL                                                                | Deskripsi                                 |
 | -------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
 | **Dashboard Shlink** | [https://dashboard.iloveurl.site](https://dashboard.iloveurl.site) | Antarmuka untuk membuat dan memantau link |
-| **Backend API**      | [http://103.226.138.119/rest/v3](http://103.226.138.119/rest/v3)   | Endpoint API REST                         |
+| **Backend API**      | [http://103.226.138.119:8800/rest/v3](http://103.226.138.119:8800/rest/v3)   | Endpoint API REST                         |
 | **Short Domain**     | [https://short.iloveurl.site](https://short.iloveurl.site)         | Domain untuk tautan pendek                |
 
 ---
@@ -255,7 +249,7 @@ Masuk ke:
 https://dashboard.iloveurl.site
 ```
 
-Masukkan **API Key:** (contoh saja)
+Masukkan **API Key** yang telah di-generate sebelumnya (contoh):
 
 ```
 11dca439-54f1-4df3-a078-88480a1adfa5
@@ -295,8 +289,8 @@ Fitur analitik tersedia langsung di dashboard:
 Contoh membuat short URL melalui terminal:
 
 ```bash
-curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
-  -H "X-Api-Key: 0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY=" \
+curl -X POST "http://103.226.138.119:8800/rest/v3/short-urls" \
+  -H "X-Api-Key: your_api_key_here" \
   -d "longUrl=https://example.com&customSlug=promo"
 ```
 
@@ -321,7 +315,7 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 
 ## Kesimpulan
 
-### Kelebihan Shlink
+### ✅ Kelebihan Shlink
 - **Gratis dan Open Source**: Tidak ada biaya lisensi, dapat dimodifikasi sesuai kebutuhan
 - **Kontrol Penuh**: Data dan infrastruktur sepenuhnya di bawah kendali pengguna
 - **Privasi Terjamin**: Tidak ada pihak ketiga yang mengakses data klik dan analitik
@@ -331,14 +325,14 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 - **QR Code Generator**: Generate QR code otomatis untuk setiap URL
 - **Scalable**: Dapat disesuaikan dengan kebutuhan traffic dan storage
 
-### Kekurangan Shlink
+### ❌ Kekurangan Shlink
 - **Setup Teknis**: Membutuhkan pengetahuan tentang server, Docker, dan networking
 - **Maintenance**: Perlu maintenance rutin (update, backup, monitoring)
 - **Biaya Hosting**: Memerlukan server atau VPS untuk menjalankan aplikasi
 - **Tidak Ada Multi-link Profil**: Tidak cocok untuk kebutuhan bio link seperti Instagram
 - **Learning Curve**: Butuh waktu untuk mempelajari cara penggunaan dan konfigurasi
 
-### Gunakan Shlink Jika:
+### 🎯 Gunakan Shlink Jika:
 - Membutuhkan kontrol penuh atas data dan privasi
 - Mengintegrasikan URL shortener dengan sistem internal perusahaan
 - Memerlukan analitik detail dan real-time tanpa batasan
@@ -348,7 +342,7 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 - Membutuhkan API untuk automasi dan integrasi
 - Tim atau organisasi yang memerlukan solusi self-hosted
 
-### Gunakan Linktree Jika:
+### 🎯 Gunakan Linktree Jika:
 - Membutuhkan bio link untuk profil media sosial (Instagram, TikTok, dll)
 - Ingin setup cepat tanpa pengetahuan teknis
 - Tidak ingin repot dengan server maintenance
@@ -365,5 +359,5 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 1. [Shlink Official Docs](https://shlink.io/documentation)
 2. [Docker Hub: shlinkio/shlink](https://hub.docker.com/r/shlinkio/shlink)
 3. [Linktree Website](https://linktr.ee/)
-4. [Chatgpt](https://chatgpt.com/)
+4. [ChatGPT](https://chatgpt.com/)
 5. [Claude AI](https://claude.ai/)
