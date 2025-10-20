@@ -3,6 +3,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png" alt="Shlink Logo" width="600">
 </p>
+
 <h1 align="center">SHLINK - Self-Hosted URL Shortener & Link Manager</h1>
 <p align="center" style="font-size: 18px;"><b><i>Powerful, open-source, and privacy-first link shortener</i></b></p>
 
@@ -39,10 +40,15 @@ Dalam proyek ini, Shlink dijalankan menggunakan **Docker Compose** dengan konfig
 ### 1. Prasyarat
 - Server / VPS (Ubuntu 22.04 atau lebih baru)
 - Domain aktif (`dashboard.iloveurl.site` dan `short.iloveurl.site`)
-- Sudah terinstal **Docker** dan **Docker Compose**
+- Sudah terinstal **Docker**, **Docker Compose**, dan **Nginx**
 
 ```bash
-sudo apt update && sudo apt install docker.io docker-compose -y
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt install docker.io docker-compose nginx -y
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo systemctl enable nginx
+sudo systemctl start nginx
 ```
 
 ---
@@ -56,24 +62,33 @@ cd shlink
 
 ---
 
-### 3. Struktur Direktori
+### 3. Konfigurasi Docker Compose
 
+Edit file `docker-compose.yml` dan sesuaikan konfigurasi berikut:
+
+#### Port Configuration
+Pastikan port yang digunakan sesuai dengan konfigurasi NGINX:
+- Shlink server: `8800:8080` (port 8800 di host, 8080 di container)
+- Dashboard: `3000:80` (port 3000 di host, 80 di container)
+
+#### Database Configuration
+Atur password database di environment variables:
+```yaml
+environment:
+  MYSQL_DATABASE: shlink
+  MYSQL_USER: shlink
+  MYSQL_PASSWORD: your_secure_password
+  MYSQL_ROOT_PASSWORD: your_root_password
 ```
-/shlink
- ├── docker-compose.yml
- ├── nginx/
- │    ├── shlink.site
- │    └── shlink.dashboard
- ├── data/
- └── README.md
+
+#### API Key Configuration
+Generate dan set API key untuk Shlink:
+```yaml
+environment:
+  SHLINK_ADMIN_API_KEY: "your_generated_api_key"
 ```
 
----
-
-### 4. Konfigurasi `docker-compose.yml`
-
-Isi `docker-compose.yml` seperti ini:
-
+Contoh konfigurasi lengkap `docker-compose.yml`:
 ```yaml
 version: "3.8"
 
@@ -98,7 +113,7 @@ services:
       - db
     environment:
       DEFAULT_DOMAIN: short.iloveurl.site
-      IS_HTTPS_ENABLED: "true"
+      IS_HTTPS_ENABLED: "false"
       DB_DRIVER: mysql
       DB_HOST: db
       DB_NAME: shlink
@@ -107,79 +122,85 @@ services:
       GEOLITE_LICENSE_KEY: ""
       SHLINK_ADMIN_API_KEY: "0p+mDvbpZGLPGVCXnV+EDduR9Blkv27Dhq9XSzSbdQY="
     ports:
-      - "8080:8080"
+      - "8800:8080"
 
   web_client:
     image: shlinkio/shlink-web-client:stable
     container_name: shlink_dashboard
     restart: always
     environment:
-      SHLINK_API_URL: "http://103.226.138.119"
+      SHLINK_API_URL: "http://103.226.138.119:8800"
     ports:
       - "3000:80"
-
-  nginx:
-    image: nginx:alpine
-    container_name: shlink_nginx
-    restart: always
-    volumes:
-      - ./nginx/shlink.site:/etc/nginx/conf.d/shlink.site
-      - ./nginx/shlink.dashboard:/etc/nginx/conf.d/shlink.dashboard
-    ports:
-      - "80:80"
-      - "443:443"
 ```
 
 ---
 
-### 5. Konfigurasi NGINX
+### 4. Konfigurasi NGINX
 
-#### File: `nginx/shlink.site`
+#### File: `/etc/nginx/sites-available/shlink.site`
 
 ```nginx
 server {
     listen 80;
-    server_name short.iloveurl.site;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name short.iloveurl.site;
-
-    ssl_certificate /etc/letsencrypt/live/short.iloveurl.site/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/short.iloveurl.site/privkey.pem;
-
+    server_name iloveurl.site short.iloveurl.site;
     location / {
-        proxy_pass http://shlink:8080;
+        proxy_pass http://127.0.0.1:8800;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
 
-#### File: `nginx/shlink.dashboard`
+Aktifkan konfigurasi:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/shlink.site /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+#### File: `/etc/nginx/sites-available/shlink.dashboard`
 
 ```nginx
 server {
     listen 80;
     server_name dashboard.iloveurl.site;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name dashboard.iloveurl.site;
-
-    ssl_certificate /etc/letsencrypt/live/dashboard.iloveurl.site/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/dashboard.iloveurl.site/privkey.pem;
-
     location / {
-        proxy_pass http://web_client:80;
+        proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
+
+Aktifkan konfigurasi:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/shlink.dashboard /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+### 5. Konfigurasi Vite
+
+Tambahkan konfigurasi berikut di file `vite.config.ts` untuk mengizinkan akses dari domain dashboard:
+
+```typescript
+server: {
+  port: 3000,
+  allowedHosts: ['dashboard.iloveurl.site', 'localhost', '127.0.0.1'],
+  watch: {
+    // Do not watch test files or generated files, avoiding the dev server to constantly reload when not needed
+    ignored: ['**/.idea/**', '**/.git/**', '**/build/**', '**/coverage/**', '**/test/**'],
+  },
+},
 ```
 
 ---
