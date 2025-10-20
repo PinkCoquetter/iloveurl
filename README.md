@@ -13,6 +13,13 @@
 
 **Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
 
+<div align="center">
+
+| [Deskripsi](#deskripsi-aplikasi) | [Anggota Kelompok](#anggota-kelompok) | [Instalasi](#instalasi) | [Cara Pemakaian](#cara-pemakaian) | [Perbandingan](#perbandingan-shlink-vs-linktree) | [Referensi](#referensi) |
+|----------------------------------|---------------------------------------|-------------------------|-----------------------------------|--------------------------------------------------|-------------------------|
+
+</div>
+
 ---
 
 ## Anggota Kelompok
