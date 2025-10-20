@@ -321,7 +321,7 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 
 ## Kesimpulan
 
-### ✅ Kelebihan Shlink
+### Kelebihan Shlink
 - **Gratis dan Open Source**: Tidak ada biaya lisensi, dapat dimodifikasi sesuai kebutuhan
 - **Kontrol Penuh**: Data dan infrastruktur sepenuhnya di bawah kendali pengguna
 - **Privasi Terjamin**: Tidak ada pihak ketiga yang mengakses data klik dan analitik
@@ -331,14 +331,14 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 - **QR Code Generator**: Generate QR code otomatis untuk setiap URL
 - **Scalable**: Dapat disesuaikan dengan kebutuhan traffic dan storage
 
-### ❌ Kekurangan Shlink
+### Kekurangan Shlink
 - **Setup Teknis**: Membutuhkan pengetahuan tentang server, Docker, dan networking
 - **Maintenance**: Perlu maintenance rutin (update, backup, monitoring)
 - **Biaya Hosting**: Memerlukan server atau VPS untuk menjalankan aplikasi
 - **Tidak Ada Multi-link Profil**: Tidak cocok untuk kebutuhan bio link seperti Instagram
 - **Learning Curve**: Butuh waktu untuk mempelajari cara penggunaan dan konfigurasi
 
-### 🎯 Gunakan Shlink Jika:
+### Gunakan Shlink Jika:
 - Membutuhkan kontrol penuh atas data dan privasi
 - Mengintegrasikan URL shortener dengan sistem internal perusahaan
 - Memerlukan analitik detail dan real-time tanpa batasan
@@ -348,7 +348,7 @@ curl -X POST "http://103.226.138.119/rest/v3/short-urls" \
 - Membutuhkan API untuk automasi dan integrasi
 - Tim atau organisasi yang memerlukan solusi self-hosted
 
-### 🎯 Gunakan Linktree Jika:
+### Gunakan Linktree Jika:
 - Membutuhkan bio link untuk profil media sosial (Instagram, TikTok, dll)
 - Ingin setup cepat tanpa pengetahuan teknis
 - Tidak ingin repot dengan server maintenance
