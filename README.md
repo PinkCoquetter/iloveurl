@@ -7,18 +7,26 @@
 <h1 align="center">SHLINK - Self-Hosted URL Shortener & Link Manager</h1>
 <p align="center" style="font-size: 18px;"><b><i>Powerful, open-source, and privacy-first link shortener</i></b></p>
 
----
-
-## Deskripsi Aplikasi
-
-**Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
-
 <div align="center">
 
 | [Deskripsi](#deskripsi-aplikasi) | [Anggota Kelompok](#anggota-kelompok) | [Instalasi](#instalasi) | [Cara Pemakaian](#cara-pemakaian) | [Perbandingan](#perbandingan-shlink-vs-linktree) | [Referensi](#referensi) |
 |----------------------------------|---------------------------------------|-------------------------|-----------------------------------|--------------------------------------------------|-------------------------|
 
 </div>
+
+---
+
+## Deskripsi Aplikasi
+
+**Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
+
+Dalam proyek ini, Shlink dijalankan menggunakan **Docker Compose** dengan konfigurasi sebagai berikut:
+
+| Komponen | Fungsi | URL |
+|-----------|---------|-----|
+| Backend (API Server) | Endpoint utama API | `http://103.226.138.119` |
+| Web Client (Dashboard) | UI manajemen link | `https://dashboard.iloveurl.site` |
+| Short Domain | Domain URL pendek | `https://short.iloveurl.site` |
 
 ---
 
@@ -54,8 +62,10 @@ sudo systemctl start nginx
 
 ### 2. Clone Repository
 
+Clone repository Shlink Backend:
+
 ```bash
-git clone https://github.com/kelompok4-iloveurl/shlink.git
+git clone https://github.com/shlinkio/shlink.git
 cd shlink
 ```
 
@@ -82,9 +92,17 @@ environment:
 
 ---
 
-### 4. Generate API Key
+### 4. Jalankan Docker Compose
 
-Masuk ke container Shlink dan generate API key:
+```bash
+sudo docker-compose up -d
+```
+
+---
+
+### 5. Generate API Key
+
+Setelah container berjalan, masuk ke container Shlink dan generate API key:
 
 ```bash
 docker exec -it shlink_php sh
@@ -92,11 +110,15 @@ php /home/shlink/www/bin/cli api-key:generate
 exit
 ```
 
-Salin API key yang dihasilkan dan masukkan ke file `docker-compose.yml` pada bagian `SHLINK_ADMIN_API_KEY`.
+Salin API key yang dihasilkan dan masukkan ke file `docker-compose.yml` pada bagian `SHLINK_ADMIN_API_KEY`, lalu restart container:
+
+```bash
+sudo docker-compose restart shlink
+```
 
 ---
 
-### 5. Setup Database
+### 6. Setup Database
 
 Masuk ke container Shlink dan jalankan migrasi database:
 
@@ -109,7 +131,67 @@ exit
 
 ---
 
-### 6. Konfigurasi NGINX
+### 7. Clone dan Setup Web Client
+
+Pindah ke direktori terpisah untuk web client:
+
+```bash
+cd ..
+git clone https://github.com/shlinkio/shlink-web-client.git
+cd shlink-web-client
+```
+
+---
+
+### 10. Akses Layanan
+
+#### File: `/etc/nginx/sites-available/shlink.site`
+
+```nginx
+server {
+    listen 80;
+    server_name iloveurl.site short.iloveurl.site;
+    location / {
+        proxy_pass http://127.0.0.1:8800;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Aktifkan konfigurasi:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/shlink.site /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+#### File: `/etc/nginx/sites-available/shlink.dashboard`
+
+```nginx
+server {
+    listen 80;
+    server_name dashboard.iloveurl.site;
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Aktifkan konfigurasi:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/shlink.dashboard /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
 
 #### File: `/etc/nginx/sites-available/shlink.site`
 
@@ -161,32 +243,7 @@ sudo systemctl restart nginx
 
 ---
 
-### 7. Konfigurasi Vite
-
-Tambahkan konfigurasi berikut di file `vite.config.ts` untuk mengizinkan akses dari domain dashboard:
-
-```typescript
-server: {
-  port: 3000,
-  allowedHosts: ['dashboard.iloveurl.site', 'localhost', '127.0.0.1'],
-  watch: {
-    // Do not watch test files or generated files, avoiding the dev server to constantly reload when not needed
-    ignored: ['**/.idea/**', '**/.git/**', '**/build/**', '**/coverage/**', '**/test/**'],
-  },
-},
-```
-
----
-
-### 8. Jalankan Docker Compose
-
-```bash
-sudo docker-compose up -d
-```
-
----
-
-### 9. Akses Layanan
+### 10. Akses Layanan
 
 | Komponen             | URL                                                                | Deskripsi                                 |
 | -------------------- | ------------------------------------------------------------------ | ----------------------------------------- |
