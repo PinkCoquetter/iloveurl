@@ -1,4 +1,4 @@
-# Project Hosting Shlink [Kelompok 4 / Paralel 1]
+# Project Hosting Shlink [Kelompok 6 / Paralel 1]
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/shlinkio/shlink.io/main/public/images/shlink-hero.png" alt="Shlink Logo" width="600">
@@ -19,14 +19,6 @@
 ## Deskripsi Aplikasi
 
 **Shlink** adalah layanan pemendekan URL yang dihosting sendiri dan bersifat Open Source yang memungkinkan pengguna membuat dan mengelola URL pendek di bawah domain mereka sendiri. Aplikasi ini menyediakan antarmuka yang powerful namun sederhana untuk menghasilkan URL pendek, melacak klik, dan menganalisis data pengunjung. Shlink menawarkan berbagai fitur termasuk kode pendek kustom, akses API untuk integrasi yang mulus dengan aplikasi lain, dan antarmuka command-line untuk manajemen tingkat lanjut. Progressive web app (PWA) yang dimilikinya memberikan pengalaman pengguna yang intuitif. Dibangun dengan PHP dan memanfaatkan framework modern seperti Mezzio, Doctrine, dan Symfony, memastikan stabilitas dan performa. Shlink dirancang untuk pengguna yang menghargai kontrol atas data mereka dan lebih memilih solusi self-hosted dengan fitur yang ekstensif.
-
-Dalam proyek ini, Shlink dijalankan menggunakan **Docker Compose** dengan konfigurasi sebagai berikut:
-
-| Komponen | Fungsi | URL |
-|-----------|---------|-----|
-| Backend (API Server) | Endpoint utama API | `http://103.226.138.119` |
-| Web Client (Dashboard) | UI manajemen link | `https://dashboard.iloveurl.site` |
-| Short Domain | Domain URL pendek | `https://short.iloveurl.site` |
 
 ---
 
